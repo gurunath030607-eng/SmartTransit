@@ -14,7 +14,7 @@ st.set_page_config(
 
 # LOAD DATA
 
-DATA_PATH = "data"
+DATA_PATH = "."
 
 @st.cache_data
 def load_data():
