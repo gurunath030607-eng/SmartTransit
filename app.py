@@ -295,15 +295,6 @@ elif page == "Transport Map":
     else:
         st.warning("No valid stop coordinates found.")
 
-            )
-
-    else:
-
-        st.warning(
-            "Geographical information unavailable."
-        )
-
-
 # SMART INSIGHTS
 
 elif page == "Smart Insights":
