@@ -262,58 +262,39 @@ elif page == "Transport Map":
 
     st.header("Chennai Transport Network Map")
 
-    if {"stop_lat", "stop_lon"}.issubset(stops.columns):
+    map_data = stops.copy()
 
-        map_data = stops.dropna(
-            subset=["stop_lat", "stop_lon"]
-        ).copy()
+    map_data["stop_lat"] = pd.to_numeric(
+        map_data["stop_lat"], errors="coerce"
+    )
 
-        map_data["stop_lat"] = pd.to_numeric(
-            map_data["stop_lat"],
-            errors="coerce"
+    map_data["stop_lon"] = pd.to_numeric(
+        map_data["stop_lon"], errors="coerce"
+    )
+
+    map_data = map_data.dropna(
+        subset=["stop_lat", "stop_lon"]
+    )
+
+    map_data = map_data[
+        map_data["stop_lat"].between(12.5, 13.5)
+        & map_data["stop_lon"].between(79.5, 80.5)
+    ]
+
+    st.write("Valid Chennai stops:", len(map_data))
+
+    if not map_data.empty:
+
+        st.map(
+            map_data,
+            latitude="stop_lat",
+            longitude="stop_lon",
+            zoom=9
         )
 
-        map_data["stop_lon"] = pd.to_numeric(
-            map_data["stop_lon"],
-            errors="coerce"
-        )
+    else:
+        st.warning("No valid stop coordinates found.")
 
-        map_data = map_data.dropna(
-            subset=["stop_lat", "stop_lon"]
-        )
-
-        map_data = map_data[
-            map_data["stop_lat"].between(12.5, 13.5)
-            & map_data["stop_lon"].between(79.5, 80.5)
-        ]
-
-        if not map_data.empty:
-
-            fig = px.scatter_map(
-                map_data,
-                lat="stop_lat",
-                lon="stop_lon",
-                hover_name="stop_name"
-                if "stop_name" in map_data.columns
-                else None,
-                zoom=9,
-                height=600,
-                title="Transport Stop Locations"
-            )
-
-            fig.update_layout(
-                map_style="open-street-map"
-            )
-
-            st.plotly_chart(
-                fig,
-                use_container_width=True
-            )
-
-        else:
-
-            st.warning(
-                "No valid Chennai coordinates found."
             )
 
     else:
